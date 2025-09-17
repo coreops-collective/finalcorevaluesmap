@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Core Values Mapping — Mockup</title>
+<style>
+  :root { --brand-yellow:#d2d820; --black:#111; --border:#111; --bg:#fff; }
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--black);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"}
+  .container{max-width:1100px;margin:0 auto;padding:28px 20px 64px}
+  h1{font-size:28px;margin:0 0 8px}
+  h2{font-size:20px;margin:20px 0 12px;font-weight:600}
+  p{margin:8px 0}
+  .toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:10px 0 16px}
+  .btn{cursor:pointer;user-select:none;padding:10px 16px;border-radius:999px;font-weight:600;letter-spacing:.2px}
+  .btn.black{background:#000;color:#fff;border:1px solid #000}
+  .btn.ghost{background:transparent;color:#000;border:1px solid #000}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 14px}
+  @media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:600px){.grid{grid-template-columns:1fr}}
+  .pill{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 14px;border:1px solid var(--border);border-radius:999px;background:#fff;color:#000;transition:background .15s ease,box-shadow .15s ease,transform .02s ease;white-space:normal;text-align:center;line-height:1.2;position:relative}
+  .pill:hover{background:var(--brand-yellow)}
+  .pill.selected{background:var(--brand-yellow);box-shadow:inset 0 0 0 1px #000}
+  .pill::after{content:attr(data-tip);position:absolute;left:50%;transform:translateX(-50%);bottom:120%;background:#000;color:#fff;padding:6px 10px;border-radius:6px;font-size:13px;line-height:1.2;white-space:normal;min-width:200px;max-width:420px;box-shadow:0 2px 6px rgba(0,0,0,.15);opacity:0;pointer-events:none;transition:opacity .12s ease;z-index:10}
+  .pill:hover::after{opacity:1}
+  .note{font-size:13px;color:#333}
+  .hr{height:1px;background:#111;opacity:.15;margin:16px 0}
+  .values-wrap{margin-top:10px}
+  .input-row{display:grid;grid-template-columns:220px 1fr;gap:10px;align-items:center;margin:10px 0}
+  .label{padding:8px 14px;border:1px solid var(--border);border-radius:999px;background:#fff;display:inline-block}
+  textarea{width:100%;min-height:70px;padding:10px 12px;border:1px solid #000;border-radius:10px;font:inherit}
+  .footer-actions{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.85) 20%,#fff 60%);padding-top:16px;backdrop-filter:blur(3px)}
+  .caps{text-transform:uppercase;font-size:12px;letter-spacing:.12em;color:#333}
+  .warning{color:#b00020;font-weight:600}
+  .ok{color:#036b26;font-weight:600}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="toolbar">
+      <div class="left"><button class="btn ghost" id="backTop">Back</button></div>
+      <div class="right"><button class="btn black" id="nextTop">Next</button></div>
+    </div>
+
+    <div id="page"></div>
+
+    <div class="footer-actions">
+      <div class="toolbar">
+        <div class="left"><button class="btn ghost" id="backBottom">Back</button></div>
+        <div class="right"><button class="btn black" id="nextBottom">Next</button></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// === FULL VALUES (103) ===
+const VALUES = [
+["Authenticity","Valuing being true to oneself, authentic individuals are genuine and sincere, not only in their actions but also in their expressions and beliefs."],
+["Altruism","This is about selflessly caring for and helping others without expecting anything in return."],
+["Ambition","A strong desire to achieve success or make a positive impact in any field."],
+["Awareness","Being conscious of one's environment, oneself, and others is crucial for empathy, effective communication, and understanding."],
+["Appreciation","Showing gratitude and recognizing the value in others and the world around us."],
+["Adaptability","The ability to adjust to new conditions or changes."],
+["Accountability","Taking responsibility for one's actions and their consequences."],
+["Bravery","The courage to face challenges, risks, and fears, often associated with strength, resilience, and the ability to confront adversity."],
+["Balance","The ability to create harmony among different aspects of life - such as work, leisure, and relationships - to maintain overall well-being and stability."],
+["Belonging","The sense of acceptance and connection within a group or community."],
+["Brotherhood","A sense of camaraderie, solidarity, and mutual support often found within groups sharing common interests, goals, or experiences."],
+["Beauty","While often associated with aesthetics, beauty as a value extends to finding and appreciating beauty in various forms - nature, art, relationships, and moments in life."],
+["Compassion","The ability to empathize with others and a desire to alleviate their suffering."],
+["Courage","The quality of being brave; facing fear, danger, or adversity with strength and resolve."],
+["Commitment","Dedication to a cause, activity, or goal. It involves perseverance and a sense of responsibility to see things through."],
+["Creativity","The ability to think outside the box and generate innovative ideas."],
+["Curiosity","The desire to learn and understand more, to explore and discover."],
+["Collaboration","Working together cooperatively towards a common goal."],
+["Consistency","The quality of being reliable and stable in one's actions or beliefs over time."],
+["Caring","Showing concern and kindness towards others."],
+["Clarity","Being clear in communication and thought. Clarity helps in effective decision-making, problem-solving, and understanding."],
+["Charity","Generosity and helpfulness, especially toward the needy or suffering."],
+["Determination","The quality of being firm in one's purpose and not giving up despite challenges or obstacles. Determination is often linked with perseverance and resilience."],
+["Dedication","A strong commitment to a task, project, or other endeavor."],
+["Diversity","The value of recognizing, respecting, and embracing differences among people, including cultural, racial, religious, and gender diversity."],
+["Empathy","The ability to understand and share the feelings of others."],
+["Equality","Treating everyone with fairness and without discrimination."],
+["Excellence","The pursuit of outstanding quality or merit in any field."],
+["Ethics","Moral principles that govern a person's behavior or the conducting of an activity."],
+["Enthusiasm","A strong excitement and eagerness about something."],
+["Fairness","The quality of making judgments that are free from discrimination."],
+["Faith","Trust or confidence in a person, idea, or belief system (including religious faith); implies loyalty and commitment."],
+["Forgiveness","The act of letting go of resentment and thoughts of revenge."],
+["Freedom","The power or right to act, speak, or think without hindrance or restraint."],
+["Fun","The value of enjoying life and engaging in activities that bring joy and amusement."],
+["Friendship","A mutual bond between people, typically characterized by trust, support, and affection."],
+["Generosity","The willingness to give more of something, like time, money, or resources, than is strictly necessary or expected."],
+["Gratitude","The quality of being thankful and showing appreciation for and to return kindness."],
+["Grit","The passion and perseverance for long-term and meaningful goals."],
+["Growth","The process of developing or maturing physically, mentally, or spiritually."],
+["Grace","Elegance or beauty of form, manner, motion, or action."],
+["Harmony","The state of being in agreement or concord, seeking peaceful and balanced relationships in personal and communal interactions."],
+["Honesty","The quality of being truthful and transparent in dealings with others."],
+["Humility","The characteristic of being modest and respectful."],
+["Honor","A strong sense of ethical integrity, upholding one's moral values, and being esteemed for one's noble qualities."],
+["Hope","Holding onto a positive and optimistic expectation for the future, often inspiring perseverance through challenging times."],
+["Humor","The ability to perceive, enjoy, or express what is amusing or comical. It is a valuable tool for coping with stress, creating bonds with others, and enhancing overall quality of life."],
+["Integrity","The quality of being honest and having strong moral principles. It's about doing the right thing, even when no one is watching."],
+["Innovation","The act of introducing something new, whether it's an idea, method, or device. Innovation is key to progress and problem-solving in various fields."],
+["Inclusion","The practice of ensuring that people feel they belong, are engaged, and connected, regardless of their background or identity."],
+["Independence","The state of being self-reliant and not dependent on others."],
+["Inspiration","The process of being mentally stimulated to do or feel something, especially something creative or positive."],
+["Intelligence","The ability to acquire and apply knowledge and skills."],
+["Inquisitiveness","A strong desire to know or learn something."],
+["Justice","The principle of being fair and reasonable."],
+["Joy","The emotion of great delight or happiness caused by something exceptionally good or satisfying."],
+["Kindness","The quality of being friendly, considerate, and generous."],
+["Knowledge","The understanding and information gained through experience or education."],
+["Love","A profound and caring affection towards someone or something."],
+["Loyalty","A strong feeling of support or allegiance."],
+["Learning","The acquisition of knowledge or skills through study, experience, or teaching."],
+["Leadership","The action of leading a group or an organization, or the ability to do this."],
+["Mastery","The comprehensive knowledge or skill in a subject or accomplishment."],
+["Motivation","The drive or reason for people's actions, desires, and needs."],
+["Nature","A deep appreciation and respect for the natural environment and the inherent worth of the Earth's ecosystems."],
+["Openness","The quality of being open to new experiences, ideas, and changes."],
+["Optimism","The tendency to have a positive outlook on life and to expect good outcomes."],
+["Order","The value of having structure and organization in one's life."],
+["Originality","The ability to think independently and creatively."],
+["Patience","The ability to wait calmly for something or to endure difficulties without frustration."],
+["Peace","The absence of conflict and the presence of tranquility, harmony, and serenity."],
+["Perseverance","The persistence in doing something despite difficulty or delay in achieving success."],
+["Positivity","The practice of being optimistic in attitude, focusing on the good parts of any situation, and expecting positive outcomes."],
+["Purpose","Having a sense of direction and meaning in life"],
+["Passion","A strong and barely controllable emotion or enthusiasm for something or about doing something."],
+["Respect","Treating others with dignity and acknowledging their worth as individuals."],
+["Responsibility","The state of being accountable for one's actions and their impact on others."],
+["Resilience","The ability to recover from setbacks, adapt to change, and keep going in the face of adversity."],
+["Resourcefulness","Being able to cope with difficult situations through imaginative and creative solutions."],
+["Reliability","Consistency in actions and dependability."],
+["Strength","The quality of being strong, not just physically but also mentally and emotionally."],
+["Service","The act of helping or doing work for others."],
+["Sustainability","The ability to maintain balance and avoid depletion of natural resources to support long-term ecological balance and future generations."],
+["Sincerity","The quality of being free from pretense, deceit, or hypocrisy."],
+["Self-discipline","The ability to control one's feelings and overcome one's weaknesses; the ability to pursue what one thinks is right despite temptations to abandon it."],
+["Simplicity","The quality of being plain, natural, or easy to understand."],
+["Sympathy","Feelings of pity and sorrow for someone else's misfortune; understanding between people; common feeling."],
+["Security","The state of being free from danger or threat."],
+["Success","The accomplishment of an aim or purpose."],
+["Trust","The firm belief in the reliability, truth, ability, or strength of someone or something."],
+["Tenacity","The quality or fact of being very determined; determination."],
+["Transparency","The quality of being done in an open way without secrets."],
+["Teamwork","The combined action of a group, especially when effective and efficient."],
+["Thankfulness","The expression of gratitude, especially to others."],
+["Time","Valuing time involves recognizing its importance, managing it wisely, and respecting others' time."],
+["Understanding","The ability to comprehend or grasp the meaning of something."],
+["Unity","The state of being united or joined as a whole."],
+["Uniqueness","The quality of being one of a kind or unlike anything else."],
+["Vision","The ability to think about or plan the future with imagination or wisdom."],
+["Vitality","The state of being strong and active; energy."],
+["Wisdom","The ability to think and act using knowledge, experience, understanding, common sense, and insight."],
+["Well-being","The state of being comfortable, healthy, or happy."],
+["Wealth","Often associated with an abundance of valuable possessions or money, but it can also refer to richness in experience, knowledge, and other non-material aspects."]
+];
+
+// === STATE ===
+const state = {page:1,picked:new Set(),narrowed:new Set(),definitions:{}};
+const el=sel=>document.querySelector(sel);const create=(t,a={})=>Object.assign(document.createElement(t),a);
+
+function render(){
+  const root=el('#page');
+  root.innerHTML='';
+  if(state.page===1) return renderPage1(root);
+  if(state.page===2) return renderPage2(root);
+  if(state.page===3) return renderPage3(root);
+  if(state.page===4) return renderPage4(root);
+}
+
+function makePill(word,tip,isSelected,onClick){
+  const btn=create('button',{className:'pill'+(isSelected?' selected':''),textContent:word});
+  btn.setAttribute('data-tip',tip);
+  btn.addEventListener('click',e=>{e.preventDefault();onClick&&onClick();});
+  return btn;
+}
+
+// === PAGES ===
+function renderPage1(root){
+  root.append(
+    h1("When your values are clear, decisions are easy."),
+    p("Core values aren’t buzzwords. They’re how your business actually behaves — in hiring, in leadership, in communication, in conflict, and in growth. They shape what you say yes to. And what you walk away from. If your business is growing, clarity here isn’t optional."),
+    p("Let’s name what actually matters — and make it part of how you run."),
+    h2("Goal"),
+    p("Identify the 3–5 guiding values that shape how you lead, hire, serve, and grow — and define exactly what they look like in practice."),
+    h2("Step 1: Brainstorm Freely"),
+    p("Start by reviewing the words listed below. Hover over them to see their definitions. Choose the values that resonate with you — words that reflect how you operate at your best, how you lead your team, and how you want to be known."),
+    p("There isn’t a right or wrong amount to choose, but we’ll narrow to 3–7 later."),
+    div('hr'),
+    div('caps','Pick as many as you like')
+  );
+  const grid=div('grid values-wrap');
+  VALUES.forEach(([w,d])=>{
+    const pill=makePill(w,d,state.picked.has(w),()=>{
+      state.picked.has(w)?state.picked.delete(w):state.picked.add(w);
+      render();
+    });
+    grid.appendChild(pill);
+  });
+  root.appendChild(grid);
+  updateNav({
+    nextEnabled: state.picked.size>0,
+    backHandler: ()=>{},
+    nextHandler: ()=>{ state.page=2; render(); }
+  });
+}
+
+function renderPage2(root){
+  root.append(
+    h1("When your values are clear, decisions are easy."),
+    h2("Step 2: Narrow & Group"),
+    p("Group similar values (e.g., Integrity + Honesty + Transparency → Integrity; Growth + Learning + Innovation → Continuous Improvement). Now choose your top 3–7 non‑negotiables."),
+    div('hr'),
+    div('caps',`Chosen on Page 1: ${state.picked.size}`)
+  );
+  const picked=[...state.picked];
+  const grid=div('grid values-wrap');
+  picked.forEach(w=>{
+    const def=VALUES.find(v=>v[0]===w)?.[1]||'';
+    const sel=state.narrowed.has(w);
+    const pill=makePill(w,def,sel,()=>{
+      if(sel){ state.narrowed.delete(w); }
+      else { if(state.narrowed.size<7) state.narrowed.add(w); }
+      render();
+    });
+    grid.appendChild(pill);
+  });
+  root.appendChild(grid);
+  const msg=create('p',{className:'note'});
+  if(state.narrowed.size<3) msg.innerHTML='<span class="warning">Pick at least 3.</span>';
+  else if(state.narrowed.size>7) msg.innerHTML='<span class="warning">Maximum is 7.</span>';
+  else msg.innerHTML=`<span class="ok">Looks good — you’ve selected ${state.narrowed.size}.</span>`;
+  root.append(msg);
+  updateNav({
+    nextEnabled: state.narrowed.size>=3 && state.narrowed.size<=7,
+    backHandler: ()=>{ state.page=1; render(); },
+    nextHandler: ()=>{ state.page=3; render(); }
+  });
+}
+
+function renderPage3(root){
+  root.append(
+    h1("When your values are clear, decisions are easy."),
+    h2("Step 3: Define Each Value"),
+    p("(Optional) Define each value below. You can click Next without filling these in."),
+    p("Prompts: What does this mean in your business? How do you live this daily? What does it look like in client experience or team culture?"),
+    div('hr')
+  );
+  const list=create('div');
+  [...state.narrowed].forEach(w=>{
+    const row=div('input-row');
+    row.append(
+      div('label',w),
+      create('textarea',{placeholder:`Define how “${w}” shows up in your business…`,value:state.definitions[w]||''})
+    );
+    const ta=row.querySelector('textarea');
+    ta.addEventListener('input',()=>{ state.definitions[w]=ta.value; /* don't re-render to avoid losing focus */ });
+    list.appendChild(row);
+  });
+  root.append(list);
+  updateNav({
+    nextEnabled: true, // always allowed to proceed
+    backHandler: ()=>{ state.page=2; render(); },
+    nextHandler: ()=>{ state.page=4; render(); }
+  });
+}
+
+function renderPage4(root){
+  root.append(
+    h1("When your values are clear, decisions are easy."),
+    h2("Recap: Your Core Values"),
+    p("Here’s what you chose and how you defined them (if provided)."),
+    div('hr')
+  );
+  [...state.narrowed].forEach(w=>{
+    root.append(
+      div('label',w),
+      p(state.definitions[w]||'')
+    );
+  });
+  const actions=create('div');
+  actions.style.display='flex';
+  actions.style.gap='12px';
+  const startOver=create('button',{className:'btn ghost',textContent:'Start Over'});
+  startOver.onclick=()=>{ state.page=1; state.picked.clear(); state.narrowed.clear(); state.definitions={}; render(); };
+  const dl=create('button',{className:'btn black',textContent:'Download to PDF'});
+  dl.onclick=()=>{ window.print(); };
+  actions.append(startOver,dl);
+  root.append(actions);
+  ['nextTop','nextBottom','backTop','backBottom'].forEach(id=>{ const b=el('#'+id); if(b) b.style.display='none'; });
+}
+
+// === UI helpers ===
+function h1(t){const e=create('h1');e.textContent=t;return e}
+function h2(t){const e=create('h2');e.textContent=t;return e}
+function p(){const e=create('p');for(const a of arguments){if(typeof a==='string') e.append(a); else if(a&&a.nodeType===1) e.appendChild(a);}return e}
+function div(c,t){const e=create('div');if(c)e.className=c;if(t)e.textContent=t;return e}
+
+function updateNav({nextEnabled,backHandler,nextHandler}){
+  ['nextTop','nextBottom'].forEach(id=>{const b=el('#'+id); if(!b) return; b.onclick=nextHandler; b.disabled=!nextEnabled; b.style.display='inline-block';});
+  ['backTop','backBottom'].forEach(id=>{const b=el('#'+id); if(!b) return; b.onclick=backHandler; b.style.display='inline-block'; b.disabled = state.page===1;});
+}
+
+// kick it off
+render();
+</script>
+</body>
+</html>
